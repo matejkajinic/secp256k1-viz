@@ -31,12 +31,9 @@ const DetailedSECP256K1 = () => {
     const resolution = adaptiveResolution(zoomRange);
 
     for (let x = start; x <= end; x = Number(math.add(x, resolution))) {
-      // Calculate x³
       const x3 = Number(math.pow(x, 3));
-      // Calculate y² = x³ + 7
       const y2 = Number(math.add(x3, 7));
 
-      // Check if we can calculate real y values
       if (y2 >= 0) {
         const y = Number(math.sqrt(y2));
         const distanceFromCenter = Math.abs(y - centerY);
@@ -85,8 +82,8 @@ const DetailedSECP256K1 = () => {
   const moveDown = () => setCenterY(prev => prev - zoomRange / 2);
 
   return (
-    <div className="w-full h-full p-4">
-      <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="w-full h-full">
+      <div className="bg-white p-6">
         <h2 className="text-2xl font-bold mb-4 text-black">
           Detailed SECP256K1 Elliptic Curve
         </h2>
