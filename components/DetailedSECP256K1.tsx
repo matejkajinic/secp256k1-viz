@@ -4,23 +4,28 @@ import { create, all } from 'mathjs';
 
 const math = create(all);
 
+interface Point {
+  x: number;
+  y: number;
+}
+
 const DetailedSECP256K1 = () => {
-  const [points, setPoints] = useState([]);
-  const [zoomRange, setZoomRange] = useState(10);
-  const [centerX, setCenterX] = useState(0);
-  const [centerY, setCenterY] = useState(0);
-  const [isZooming, setIsZooming] = useState(false);
+  const [points, setPoints] = useState<Point[]>([]);
+  const [zoomRange, setZoomRange] = useState<number>(10);
+  const [centerX, setCenterX] = useState<number>(0);
+  const [centerY, setCenterY] = useState<number>(0);
+  const [isZooming, setIsZooming] = useState<boolean>(false);
 
   const MIN_RESOLUTION = 0.000001;
   const MAX_ZOOM_IN = 0.0001;
   const MAX_ZOOM_OUT = 1000;
 
-  const adaptiveResolution = useCallback((range) => {
+  const adaptiveResolution = useCallback((range: number): number => {
     return Math.max(MIN_RESOLUTION, range / 500);
   }, []);
 
   const generatePoints = useCallback(() => {
-    const newPoints = [];
+    const newPoints: Point[] = [];
     const start = centerX - zoomRange;
     const end = centerX + zoomRange;
     const resolution = adaptiveResolution(zoomRange);
@@ -161,8 +166,8 @@ const DetailedSECP256K1 = () => {
                 allowDataOverflow={true}
               />
               <Tooltip
-                formatter={(value) => value.toFixed(8)}
-                labelFormatter={(value) => `x: ${parseFloat(value).toFixed(8)}`}
+                formatter={(value: number) => value.toFixed(8)}
+                labelFormatter={(value: string) => `x: ${parseFloat(value).toFixed(8)}`}
               />
               <Line
                 type="monotone"
