@@ -30,15 +30,26 @@ const DetailedSECP256K1 = () => {
     const end = centerX + zoomRange;
     const resolution = adaptiveResolution(zoomRange);
 
-    for (let x = start; x <= end; x = math.add(x, resolution)) {
-      const x3 = math.chain(x).pow(3).done();
-      const y2 = math.add(x3, 7);
+    for (let x = start; x <= end; x = Number(math.add(x, resolution))) {
+      // Calculate x³
+      const x3 = Number(math.pow(x, 3));
+      // Calculate y² = x³ + 7
+      const y2 = Number(math.add(x3, 7));
 
-      if (math.isPositive(y2) || math.isZero(y2)) {
-        const y = math.sqrt(y2);
-        if (math.abs(math.subtract(y, centerY)) <= zoomRange) {
-          newPoints.push({ x: parseFloat(x), y: parseFloat(y) });
-          newPoints.push({ x: parseFloat(x), y: parseFloat(math.unaryMinus(y)) });
+      // Check if we can calculate real y values
+      if (y2 >= 0) {
+        const y = Number(math.sqrt(y2));
+        const distanceFromCenter = Math.abs(y - centerY);
+        
+        if (distanceFromCenter <= zoomRange) {
+          newPoints.push({ 
+            x: Number(x), 
+            y: Number(y)
+          });
+          newPoints.push({ 
+            x: Number(x), 
+            y: -Number(y)
+          });
         }
       }
     }
@@ -58,20 +69,20 @@ const DetailedSECP256K1 = () => {
 
   const handleZoomIn = () => {
     if (zoomRange > MAX_ZOOM_IN) {
-      setZoomRange((prev) => math.divide(prev, 2));
+      setZoomRange(prev => Number(prev) / 2);
     }
   };
 
   const handleZoomOut = () => {
     if (zoomRange < MAX_ZOOM_OUT) {
-      setZoomRange((prev) => math.multiply(prev, 2));
+      setZoomRange(prev => Number(prev) * 2);
     }
   };
 
-  const moveLeft = () => setCenterX((prev) => math.subtract(prev, zoomRange / 2));
-  const moveRight = () => setCenterX((prev) => math.add(prev, zoomRange / 2));
-  const moveUp = () => setCenterY((prev) => math.add(prev, zoomRange / 2));
-  const moveDown = () => setCenterY((prev) => math.subtract(prev, zoomRange / 2));
+  const moveLeft = () => setCenterX(prev => prev - zoomRange / 2);
+  const moveRight = () => setCenterX(prev => prev + zoomRange / 2);
+  const moveUp = () => setCenterY(prev => prev + zoomRange / 2);
+  const moveDown = () => setCenterY(prev => prev - zoomRange / 2);
 
   return (
     <div className="w-full h-full p-4">
